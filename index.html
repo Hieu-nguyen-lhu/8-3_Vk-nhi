@@ -27,6 +27,55 @@ html,body{
   background-size:400% 400%;
   animation:auroraMove 20s ease infinite;
 }
+
+/* ── Frosted glass blur overlay ── */
+.blur-overlay{
+  position:fixed;inset:0;z-index:1;
+  background:rgba(30,10,40,0.15);
+  backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+
+/* ── Rotating images carousel ── */
+.carousel-container{
+  position:fixed;
+  top:35%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:0;
+  width:280px;
+  height:280px;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.carousel-image{
+  position:absolute;
+  width:280px;
+  height:280px;
+  object-fit:cover;
+  border-radius:16px;
+  opacity:0;
+  animation:imageFade 15s ease-in-out infinite;
+  will-change:opacity;
+}
+
+@keyframes imageFade{
+  0%{opacity:0;}
+  15%{opacity:1;}
+  40%{opacity:1;}
+  55%{opacity:0;}
+  100%{opacity:0;}
+}
+
+.carousel-image:nth-child(1){animation-delay:0s;}
+.carousel-image:nth-child(2){animation-delay:-2.5s;}
+.carousel-image:nth-child(3){animation-delay:-5s;}
+.carousel-image:nth-child(4){animation-delay:-7.5s;}
+.carousel-image:nth-child(5){animation-delay:-10s;}
+.carousel-image:nth-child(6){animation-delay:-12.5s;}
+
 @keyframes auroraMove{
   0%{background-position:0% 0%;}
   33%{background-position:100% 50%;}
@@ -625,6 +674,15 @@ html,body{
 <body>
 
 <div class="aurora"></div>
+<div class="blur-overlay"></div>
+<div class="carousel-container">
+  <img src="img/1d1f32141961973fce703.jpg" class="carousel-image" alt="">
+  <img src="img/48c4f2ffd98a57d40e9b8.jpg" class="carousel-image" alt="">
+  <img src="img/5a21830fa87a26247f6b11.jpg" class="carousel-image" alt="">
+  <img src="img/976da04e8b3b05655c2a12.jpg" class="carousel-image" alt="">
+  <img src="img/b484aa60-c244-4c2e-87ea-8d9cb8c55c66.jpg" class="carousel-image" alt="">
+  <img src="img/d2903eb815cd9b93c2dc10.jpg" class="carousel-image" alt="">
+</div>
 <canvas id="confetti-canvas"></canvas>
 <div class="flash-overlay" id="flash"></div>
 
