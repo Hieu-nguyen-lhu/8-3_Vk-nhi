@@ -669,9 +669,47 @@ html,body{
   min-height:1.2em;
   animation:fadeUp .4s ease both;
 }
+
+/* ── Secret Letter Icon ── */
+.secret-letter-icon{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:100;
+  width:50px;
+  height:50px;
+  cursor:pointer;
+  font-size:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:letterShake 0.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 8px rgba(255,100,180,0.6));
+  transition:transform 0.2s ease;
+}
+
+.secret-letter-icon:hover{
+  transform:scale(1.15);
+  filter:drop-shadow(0 0 12px rgba(255,100,180,0.9));
+}
+
+.secret-letter-icon:active{
+  transform:scale(0.95);
+}
+
+@keyframes letterShake{
+  0%{transform:rotate(0deg) translateX(0);}
+  25%{transform:rotate(-8deg) translateX(-3px);}
+  50%{transform:rotate(0deg) translateX(0);}
+  75%{transform:rotate(8deg) translateX(3px);}
+  100%{transform:rotate(0deg) translateX(0);}
+}
 </style>
 </head>
 <body>
+
+<!-- Secret Letter Icon -->
+<div class="secret-letter-icon" id="secret-letter-icon">💌</div>
 
 <div class="aurora"></div>
 <div class="blur-overlay"></div>
@@ -1103,6 +1141,13 @@ function goToStage(idx){
     // Confetti on special stages
     if(idx===2||idx===7||idx===8){spawnConfetti();flashScreen();}
     if(idx===8){setTimeout(spawnConfetti,1200);}
+    
+    // Change music for Letter stage (stage 9)
+    if(idx===9){
+      changeMusic(MUSIC_LETTER);
+    } else if(currentMusicUrl!==MUSIC_DEFAULT){
+      changeMusic(MUSIC_DEFAULT);
+    }
   },700);
 }
 
@@ -1117,9 +1162,16 @@ document.body.addEventListener('click',function(e){
   // Ignore popup clicks
   if(e.target.closest('#love-popup'))return;
   if(e.target.closest('.letter-paper'))return;
+  // Ignore secret letter icon clicks
+  if(e.target.closest('#secret-letter-icon'))return;
   // Block navigation if on love meter stage and not done yet
   if(currentStage===5 && !loveMeterDone) return;
-  const next=(currentStage+1)%stages.length;
+  
+  // Navigate: stage 0-7 go next, stage 8 or 9 loop back to 0
+  let next=currentStage+1;
+  if(next>=9){  // Stop at stage 8, don't auto go to stage 9
+    next=0; // Loop back to start
+  }
   currentStage=next;
   goToStage(currentStage);
 });
@@ -1163,6 +1215,29 @@ const audioPlayer=document.getElementById('audio-player');
 let isPlaying=false;
 let progressInterval;
 
+// URLs nhạc nền
+const MUSIC_DEFAULT='sound/Nắng_Ấm_Trong_Tim_Lofi_Ver_-_Duongg_x_Will_M_Lạc_vào_khu_rừng_hoa_Lyrics_Video_KituChat.mp3';
+const MUSIC_LETTER='sound/ytsavecom-youtube-cam-on-nguoi-da-thuc-cung-toi-original-s-media-6hv80f1-9uq-00_9BTIYYu1.mp3';
+let currentMusicUrl=MUSIC_DEFAULT;
+
+// Function thay đổi nhạc
+function changeMusic(musicUrl){
+  // Chỉ thay đổi nếu URL khác
+  if(currentMusicUrl===musicUrl)return;
+  
+  const wasPlaying=!audioPlayer.paused;
+  const currentTime=audioPlayer.currentTime;
+  
+  audioPlayer.pause();
+  audioPlayer.src=musicUrl;
+  audioPlayer.load();
+  currentMusicUrl=musicUrl;
+  
+  if(wasPlaying){
+    audioPlayer.play().catch(()=>{});
+  }
+}
+
 audioPlayer.loop=true;
 
 window.addEventListener('load',()=>{
@@ -1202,6 +1277,15 @@ document.getElementById('mp-progress').addEventListener('input',function(e){
   if(audioPlayer.duration)audioPlayer.currentTime=(this.value/100)*audioPlayer.duration;
 });
 document.getElementById('music-player').addEventListener('click',e=>e.stopPropagation());
+
+/* ────────────────────────────────────────
+   SECRET LETTER ICON HANDLER
+──────────────────────────────────────── */
+document.getElementById('secret-letter-icon').addEventListener('click',function(e){
+  e.stopPropagation();
+  currentStage=9;
+  goToStage(9);
+});
 </script>
 </body>
 </html>
