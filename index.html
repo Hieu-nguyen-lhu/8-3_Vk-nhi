@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>8/3 Cho Nhi 💖</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&family=Great+Vibes&family=Caveat:wght@500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 
@@ -456,6 +456,30 @@ html,body{
   display:flex;flex-direction:column;
   align-items:center;
   width:100%;
+}
+
+/* Letter typing animation */
+.letter-text-animated{
+  font-family:'Dancing Script',cursive;
+  font-size:clamp(1rem,3.8vw,1.25rem);
+  color:#5a1a2a;
+  line-height:1.9;
+  min-height:min(160px,28vh);
+  padding:0 4px 0 26px;
+  position:relative;z-index:1;
+  overflow:hidden;
+  white-space:pre-wrap;
+}
+
+.letter-text-animated .char{
+  display:inline;
+  opacity:0;
+  animation:charAppear 0.04s ease forwards;
+}
+
+@keyframes charAppear{
+  from{opacity:0;transform:translateY(3px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
 /* Envelope */
@@ -962,7 +986,7 @@ const stages=[
   ()=>`
     <div class="main-title">Anh hứa với em 🤞</div>
     <div class="body-text" style="margin-top:14px">
-      🌹 Luôn ở bên em, đồng hành và lo cho em<br>
+      🌹 Luôn bên em, đồng hành và yêu thương em<br>
       🌙 Nhắn tin chúc ngủ ngon mỗi đêm<br>
       😄 Cố gắng làm em cười mỗi ngày<br>
       🙏 Không để em buồn vì anh<br>
@@ -1036,7 +1060,7 @@ const stages=[
     </div>
     <div class="tap-hint" style="margin-top:10px">Chạm để tiếp tục 💌</div>
   `,
-  // 9 – Letter
+// 9 – Letter
   ()=>`
     <div class="letter-scene">
       <div class="letter-heart">💌</div>
@@ -1052,7 +1076,7 @@ const stages=[
       <div class="letter-paper">
         <div class="letter-lines"></div>
         <div class="letter-header">Nhi yêu dấu,</div>
-        <div class="letter-area">Tại đây nó từng rất dài dòng , nhưng hiện tại những lời đó không còn quan trọng nữa. Bây giờ anh chỉ muốn nói là cảm ơn em, cảm ơn vì đã luôn ở bên anh. Anh đã thực sự may mắn khi có được người bạn gái như em, biết lắng nghe , cảm thông và chia sẻ với anh. Chúc em một ngày 8/3 thật vui vẻ 🌹. Mãi yêu em ❤️‍🔥</div>
+        <div class="letter-text-animated" id="letter-text-animated"></div>
         <div class="letter-footer">— Anh 🌹</div>
       </div>
     </div>
@@ -1111,9 +1135,9 @@ function renderStage(idx){
       }
     },400);
   }
-  if(idx===6){setTimeout(updateCountdown,100);}
+if(idx===6){setTimeout(updateCountdown,100);}
   if(idx===8){setTimeout(initBouquet,100);}
-  if(idx===9){setTimeout(restoreLetter,600);}
+  if(idx===9){setTimeout(restoreLetter,600);setTimeout(initLetterTyping,800);}
 }
 
 function goToStage(idx){
@@ -1206,6 +1230,38 @@ function restoreLetter(){
   const saved=localStorage.getItem('letter_to_nhi');
   const el=document.getElementById('letter-input');
   if(saved && el) el.value=saved;
+}
+
+/* ── Letter typing animation ── */
+const LETTER_CONTENT = "Tại đây nó từng rất dài dòng , nhưng hiện tại những lời đó không còn quan trọng nữa.Thật sự anh không biết nói lời hoa mỹ,đôi lúc hơi nhạt nhẽo, anh chỉ biết nói những lời thật lòng thui , nên đôi lúc anh không biết cách an ủi hay dỗ dành hay động viên em sao cho đúng cả nhưng anh yêu em thương em là thật . Bây giờ anh chỉ muốn nói là cảm ơn em, cảm ơn vì đã luôn ở bên anh. Anh đã thực sự may mắn , tự hào khi có được người bạn gái như em, biết lắng nghe , cảm thông và chia sẻ với anh. Chúc em một ngày 8/3 thật vui vẻ 🌹. Mãi yêu em như những ngày đầu , và yêu em nhiều hơn cả ngày hôm qua nữa❤️‍🔥";
+
+let typingInterval = null;
+
+function initLetterTyping(){
+  const container = document.getElementById('letter-text-animated');
+  if(!container) return;
+  
+  if(typingInterval) clearInterval(typingInterval);
+  container.innerHTML = '';
+  
+  let charIndex = 0;
+  const chars = LETTER_CONTENT.split('');
+  
+  typingInterval = setInterval(() => {
+    if(charIndex >= chars.length){
+      clearInterval(typingInterval);
+      typingInterval = null;
+      return;
+    }
+    
+    const span = document.createElement('span');
+    span.className = 'char';
+    span.textContent = chars[charIndex];
+    span.style.animationDelay = (charIndex * 0.03) + 's';
+    container.appendChild(span);
+    
+    charIndex++;
+  }, 30);
 }
 
 /* ────────────────────────────────────────
